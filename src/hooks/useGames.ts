@@ -1,9 +1,11 @@
 // import { useState, useEffect } from "react";
 // import apiClient from "../services/api-client";
 // import { CanceledError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { GameQuery } from "../App";
-import useData from "./useData";
-import { Genre } from "./useGenres";
+// import useData, { FetchResponse } from "./useData";
+// import { Genre } from "./useGenres";
+import apiClient, { FetchResponse } from "../services/api-client";
 
 export interface Platform {
   id: number;
@@ -26,24 +28,43 @@ export interface Game {
 // }
 //
 
-//this way we have hide our endpoint /games from directly exposing in the component
-const useGames = (
-  gameQuery: GameQuery | null
-  // selectedGenre: Genre | null,
-  // selectedPlatform: Platform | null
-) =>
-  useData<Game>(
-    "/games",
-    {
-      params: {
-        genres: gameQuery?.genre?.id,
-        platforms: gameQuery?.platform?.id,
-        ordering: gameQuery?.sortOrder,
-        search: gameQuery?.searchText,
-      },
+//using react query to fetch games optimally
+const useGames = (gameQuery: GameQuery | null) => {
+  return useQuery<FetchResponse<Game>, Error>({
+    queryKey: ["games", gameQuery],
+    queryFn: () => {
+      return apiClient
+        .get<FetchResponse<Game>>("/games", {
+          params: {
+            genres: gameQuery?.genre?.id,
+            parent_platforms: gameQuery?.platform?.id,
+            ordering: gameQuery?.sortOrder,
+            search: gameQuery?.searchText,
+          },
+        })
+        .then((res) => res.data);
     },
-    [gameQuery]
-  );
+  });
+};
+
+//this way we have hide our endpoint /games from directly exposing in the component
+// const useGames = (
+//   gameQuery: GameQuery | null
+//   // selectedGenre: Genre | null,
+//   // selectedPlatform: Platform | null
+// ) =>
+//   useData<Game>(
+//     "/games",
+//     {
+//       params: {
+//         genres: gameQuery?.genre?.id,
+//         platforms: gameQuery?.platform?.id,
+//         ordering: gameQuery?.sortOrder,
+//         search: gameQuery?.searchText,
+//       },
+//     },
+//     [gameQuery]
+//   );
 
 // const useGames = () => {
 //   const [games, setGames] = useState<Game[]>([]);
