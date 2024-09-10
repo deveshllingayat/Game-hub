@@ -1,12 +1,13 @@
 // import { useState, useEffect } from "react";
 // import apiClient from "../services/api-client";
 // import { CanceledError } from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { GameQuery } from "../App";
 // import useData, { FetchResponse } from "./useData";
 // import { Genre } from "./useGenres";
 import APIClient, { FetchResponse } from "../services/api-client";
 import { Platform } from "./usePlatforms";
+import ms from "ms";
 
 const apiClient = new APIClient<Game>("/games");
 export interface Game {
@@ -26,17 +27,23 @@ export interface Game {
 
 //using react query to fetch games optimally
 const useGames = (gameQuery: GameQuery | null) => {
-  return useQuery<FetchResponse<Game>, Error>({
+  return useInfiniteQuery<FetchResponse<Game>, Error>({
     queryKey: ["games", gameQuery],
-    queryFn: () =>
+    initialPageParam: 1,
+    queryFn: ({ pageParam }) =>
       apiClient.getAll({
         params: {
-          genres: gameQuery?.genre?.id,
-          parent_platforms: gameQuery?.platform?.id,
+          genres: gameQuery?.genreId,
+          parent_platforms: gameQuery?.platformId,
           ordering: gameQuery?.sortOrder,
           search: gameQuery?.searchText,
+          page: pageParam,
         },
       }),
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage.next ? allPages.length + 1 : undefined;
+    },
+    staleTime:  ms('24h'), //24h in miliseconds using ms library
   });
 };
 
