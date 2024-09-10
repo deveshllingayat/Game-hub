@@ -1,3 +1,4 @@
+//We dont use it now because we are using react query for data fetching & we have set up reusable api-client
 // import { useEffect, useState } from "react";
 // import apiClient from "../services/api-client";
 // import { AxiosRequestConfig, CanceledError } from "axios";
