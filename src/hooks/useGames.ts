@@ -2,12 +2,12 @@
 // import apiClient from "../services/api-client";
 // import { CanceledError } from "axios";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { GameQuery } from "../App";
 // import useData, { FetchResponse } from "./useData";
 // import { Genre } from "./useGenres";
 import APIClient, { FetchResponse } from "../services/api-client";
 import { Platform } from "./usePlatforms";
 import ms from "ms";
+import useGameQueryStore from "../store";
 
 const apiClient = new APIClient<Game>("/games");
 export interface Game {
@@ -26,7 +26,9 @@ export interface Game {
 //
 
 //using react query to fetch games optimally
-const useGames = (gameQuery: GameQuery | null) => {
+const useGames = () => {
+  const gameQuery = useGameQueryStore((s) => s.gameQuery);
+
   return useInfiniteQuery<FetchResponse<Game>, Error>({
     queryKey: ["games", gameQuery],
     initialPageParam: 1,
@@ -43,7 +45,7 @@ const useGames = (gameQuery: GameQuery | null) => {
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.next ? allPages.length + 1 : undefined;
     },
-    staleTime:  ms('24h'), //24h in miliseconds using ms library
+    staleTime: ms("24h"), //24h in miliseconds using ms library
   });
 };
 

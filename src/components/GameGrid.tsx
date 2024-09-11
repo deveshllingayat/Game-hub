@@ -7,16 +7,17 @@ import GameCardSkeleton from "./GameCardSkeleton";
 import GameCardContainer from "./GameCardContainer";
 // import useData from "../hooks/useData";
 import { Genre } from "../hooks/useGenres";
-import { GameQuery } from "../App";
 import { Platform } from "../hooks/usePlatforms";
 import InfiniteScroll from "react-infinite-scroll-component";
+import useGameQueryStore from "../store";
 
-interface Props {
-  gameQuery: GameQuery | null;
-  // selectedGenre: Genre | null;
-  // selectedPlatform: Platform | null;
-}
-const GameGrid = ({ gameQuery }: Props) => {
+// interface Props {
+//   gameQuery: GameQuery | null;
+//   // selectedGenre: Genre | null;
+//   // selectedPlatform: Platform | null;
+// }
+const GameGrid = () => {
+
   const {
     data,
     error,
@@ -24,11 +25,14 @@ const GameGrid = ({ gameQuery }: Props) => {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useGames(gameQuery);
+  } = useGames();
+
   if (error) return <Text>{error.message}</Text>;
   const skeletons = [1, 2, 3, 4, 5, 6];
+
   const fetchedGamesCount =
     data?.pages?.reduce((acc, page) => acc + page?.results?.length, 0) || 0;
+
   return (
     /* all the four props are necessary for infinitescroll, dataLength is length of no. of games on the page, hasMore is a boolean i.e if we have
      next page or not , next expects a callback function to fetch nextpage games, loader is a loading spinner
