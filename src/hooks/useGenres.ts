@@ -6,16 +6,10 @@ import genres from "../data/genres";
 import { useQuery } from "@tanstack/react-query";
 import APIClient from "../services/api-client";
 import ms from "ms";
+import Genre from "../entities/Genre";
 
 const apiClient = new APIClient<Genre>("/genres");
 
-export interface Genre {
-  id: number;
-  name: string;
-  image_background: string;
-  // slug: string;
-  // games_count: number;
-}
 //this way we have hide our endpoint /genres from directly exposing in the component
 // const useGenres = ()=> useData<Genre>('/genres');
 // we have copied the data from the request and stored in data folder> genres.ts because genres will be same for each user so

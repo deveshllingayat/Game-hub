@@ -1,15 +1,16 @@
 import { Fragment, useEffect, useState } from "react";
-import apiClient from "../services/api-client";
+// import apiClient from "../services/api-client";
 import { Box, Button, SimpleGrid, Spinner, Text } from "@chakra-ui/react";
-import useGames, { Game } from "../hooks/useGames";
+import useGames from "../hooks/useGames";
+// import Game from "../entities/Game";
 import GameCard from "./GameCard";
 import GameCardSkeleton from "./GameCardSkeleton";
 import GameCardContainer from "./GameCardContainer";
 // import useData from "../hooks/useData";
-import { Genre } from "../hooks/useGenres";
-import { Platform } from "../hooks/usePlatforms";
+// import { Genre } from "../entities/Genre";
+// import { Platform } from "../entities/Platform";
 import InfiniteScroll from "react-infinite-scroll-component";
-import useGameQueryStore from "../store";
+// import useGameQueryStore from "../store";
 
 // interface Props {
 //   gameQuery: GameQuery | null;
@@ -17,7 +18,6 @@ import useGameQueryStore from "../store";
 //   // selectedPlatform: Platform | null;
 // }
 const GameGrid = () => {
-
   const {
     data,
     error,
